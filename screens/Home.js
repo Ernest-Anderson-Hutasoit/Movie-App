@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { Text, View, StyleSheet, useWindowDimensions, FlatList } from 'react-native';
 import { getPopularMovies, getUpcomingMovies } from '../services/services';
 import { SliderBox } from "react-native-image-slider-box";
 
 const Home = () => {
     const [upcomingMoviesImages, setUpcomingMoviesImages] = useState([]); //destructirung array
+    const [popularMovies, setPopularMovies] = useState(""); //destructirung array
     const [error, setError] = useState(false); //destructuring array
   
     /*
@@ -23,18 +24,36 @@ const Home = () => {
         .catch(err => {
           setError(err);
         });
+      getPopularMovies()
+        .then(movies => {
+          setPopularMovies(movies);
+        })
+        .catch(err => {
+          setError(err);
+        });
     }, []);
     return (
-        <View style={styles.sliderBoxContainer}>
+        <React.Fragment>
+          <View style={styles.sliderBoxContainer}>
             <SliderBox 
               images={upcomingMoviesImages} 
               autoplay={true} 
               circleLoop={true} 
-              sliderBoxHeight={useWindowDimensions().height / 1} 
+              sliderBoxHeight={useWindowDimensions().height / 1.5} 
               dotStyle={styles.sliderBoxStyles}
             />
             {error && <Text style={{color: 'red'}}>Error In The Server</Text>}
-        </View>
+          </View>
+          <View style={styles.carousel}>
+            <FlatList 
+              data={popularMovies}
+              horizontal={true}
+              renderItem={({item}) => <Text>{item.title}</Text>}
+            >
+            </FlatList>
+          </View>
+        </React.Fragment>
+        
     );
 };
 
@@ -46,6 +65,11 @@ const styles = StyleSheet.create({
   },
   sliderBoxStyles:{
     height: 0
+  },
+  carousel:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 
