@@ -1,6 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Image } from 'react-native';
-// import { Card } from "@rneui/themed";
+import { TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
 
 class Card extends React.PureComponent {
     render() {
@@ -10,21 +9,37 @@ class Card extends React.PureComponent {
                 <Image 
                     style={styles.cardMovies} 
                     resizeMode="cover" 
-                    source={{uri: 'https://image.tmdb.org/t/p/w500' + item.poster_path}}>
+                    source={!item.poster_path 
+                        ? {uri: 'https://image.tmdb.org/t/p/w500' + item.poster_path}
+                        : require('../assets/images/placeholder.png')}>
                 </Image>
+                {item.poster_path && <Text style={styles.moviesTitle}>{item.title}</Text>}
             </TouchableOpacity>
         );
     }
 }
+
+// const placeholderImages = require('../assets/images/placeholder.png');
+
 const styles = StyleSheet.create({
     containerCard:{
         padding:5,
-        position:"relative"
+        position:'relative',
+        alignItems:'center',
+        //justifyContent:'center',
+        height:210,
+        //backgroundColor:'red'
     },
     cardMovies:{
         height:200,
         width:120,
         borderRadius:20
+    },
+    moviesTitle:{
+        position:'absolute',
+        textAlign:'center',
+        width:100, // Kurang dari width cardMovies
+        top:5
     }
 });
 

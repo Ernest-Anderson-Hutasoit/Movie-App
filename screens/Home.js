@@ -46,7 +46,7 @@ const Home = () => {
         {error && <Text style={{ color: 'red' }}>Error In The Server</Text>}
       </View>
       <View style={styles.carousel}>
-        <List title="Lets Test This" content={popularMovies}></List>
+        <List title="Popular Movies" content={popularMovies}></List>
       </View>
     </React.Fragment>
 
