@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {View } from 'react-native';
+import { View } from 'react-native';
 import Home from './screens/Home';
 
 const App = () => {
-
-  
   return (
     <View style={{
         flex: 1,
