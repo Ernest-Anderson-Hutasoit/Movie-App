@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, useWindowDimensions, FlatList } from 'react-native';
-import { getPopularMovies, getUpcomingMovies } from '../services/services';
+import { Text, View, StyleSheet, useWindowDimensions, ScrollView } from 'react-native';
+import { getFamilyMovies, getPopularMovies, getPopularTV, getUpcomingMovies } from '../services/services';
 import { SliderBox } from "react-native-image-slider-box";
 import List from '../components/List';
 
 const Home = () => {
   const [upcomingMoviesImages, setUpcomingMoviesImages] = useState([]); //destructirung array
   const [popularMovies, setPopularMovies] = useState(""); //destructirung array
+  const [popularTv, setPopularTv] = useState(""); //destructirung array
+  const [familyMovies, setFamilyMovies] = useState(""); //destructirung array
   const [error, setError] = useState(false); //destructuring array
 
   /*
@@ -32,24 +34,45 @@ const Home = () => {
       .catch(err => {
         setError(err);
       });
+    getPopularTV()
+      .then(movies => {
+        setPopularTv(movies);
+      })
+      .catch(err => {
+        setError(err);
+      });
+    getFamilyMovies()
+      .then(movies => {
+        setFamilyMovies(movies);
+      })
+      .catch(err => {
+        setError(err);
+      });
   }, []);
   return (
     <React.Fragment>
-      <View style={styles.sliderBoxContainer}>
-        <SliderBox
-          images={upcomingMoviesImages}
-          autoplay={true}
-          circleLoop={true}
-          sliderBoxHeight={useWindowDimensions().height / 1.5}
-          dotStyle={styles.sliderBoxStyles}
-        />
-        {error && <Text style={{ color: 'red' }}>Error In The Server</Text>}
-      </View>
-      <View style={styles.carousel}>
-        <List title="Popular Movies" content={popularMovies}></List>
-      </View>
+      <ScrollView>
+        <View style={styles.sliderBoxContainer}>
+          <SliderBox
+            images={upcomingMoviesImages}
+            autoplay={true}
+            circleLoop={true}
+            sliderBoxHeight={useWindowDimensions().height / 1.5}
+            dotStyle={styles.sliderBoxStyles}
+          />
+          {error && <Text style={{ color: 'red' }}>Error In The Server</Text>}
+        </View>
+        <View style={styles.carousel}>
+          <List title="Popular Movies" content={popularMovies}></List>
+        </View>
+        <View style={styles.carousel}>
+          <List title="Popular Tv Shows" content={popularTv}></List>
+        </View>
+        <View style={styles.carousel}>
+          <List title="Family Movies" content={familyMovies}></List>
+        </View>
+      </ScrollView>
     </React.Fragment>
-
   );
 };
 
