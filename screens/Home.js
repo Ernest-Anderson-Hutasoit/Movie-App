@@ -5,72 +5,75 @@ import { SliderBox } from "react-native-image-slider-box";
 import List from '../components/List';
 
 const Home = () => {
-  const [upcomingMoviesImages, setUpcomingMoviesImages] = useState([]); //destructirung array
-  const [popularMovies, setPopularMovies] = useState(""); //destructirung array
-  const [popularTv, setPopularTv] = useState(""); //destructirung array
-  const [familyMovies, setFamilyMovies] = useState(""); //destructirung array
+  const [upcomingMovies, setUpcomingMovies] = useState([]); //destructuring array
+  const [popularMovies, setPopularMovies] = useState(); //destructuring array
+  const [popularTv, setPopularTv] = useState(); //destructuring array
+  const [familyMovies, setFamilyMovies] = useState(); //destructuring array
   const [error, setError] = useState(false); //destructuring array
+
+  const getData = () => {
+    return Promise.all([
+      getUpcomingMovies(),
+      getPopularMovies(),
+      getPopularTV(),
+      getFamilyMovies()
+    ]);
+  };
 
   /*
     useEffect() usefull in managing state in react
     second parameter in useEffect() -> interval request data from api source
   */
   useEffect(() => {
-    getUpcomingMovies()
-      .then(movies => {
-        const upcomingMoviesImagesArray = [];
-        movies.forEach(movie => {
-          upcomingMoviesImagesArray.push('https://image.tmdb.org/t/p/w500' + movie.poster_path);
-        })
-        setUpcomingMoviesImages(upcomingMoviesImagesArray);
-      })
-      .catch(err => {
-        setError(err);
-      });
-    getPopularMovies()
-      .then(movies => {
-        setPopularMovies(movies);
-      })
-      .catch(err => {
-        setError(err);
-      });
-    getPopularTV()
-      .then(movies => {
-        setPopularTv(movies);
-      })
-      .catch(err => {
-        setError(err);
-      });
-    getFamilyMovies()
-      .then(movies => {
-        setFamilyMovies(movies);
+    getData()
+      .then(([upcomingMoviesData, popularMoviesData, popularTvData, familyMoviesData]) => {
+        const upcomingMoviesArray = [];
+        upcomingMoviesData.forEach(movie => {
+          upcomingMoviesArray.push('https://image.tmdb.org/t/p/w500' + movie.poster_path);
+        });
+        setUpcomingMovies(upcomingMoviesArray);
+        setPopularMovies(popularMoviesData);
+        setPopularTv(popularTvData);
+        setFamilyMovies(familyMoviesData);
       })
       .catch(err => {
         setError(err);
       });
   }, []);
-  return (
+
+  return(
     <React.Fragment>
       <ScrollView>
-        <View style={styles.sliderBoxContainer}>
-          <SliderBox
-            images={upcomingMoviesImages}
-            autoplay={true}
-            circleLoop={true}
-            sliderBoxHeight={useWindowDimensions().height / 1.5}
-            dotStyle={styles.sliderBoxStyles}
-          />
-          {error && <Text style={{ color: 'red' }}>Error In The Server</Text>}
-        </View>
-        <View style={styles.carousel}>
-          <List title="Popular Movies" content={popularMovies}></List>
-        </View>
-        <View style={styles.carousel}>
-          <List title="Popular Tv Shows" content={popularTv}></List>
-        </View>
-        <View style={styles.carousel}>
-          <List title="Family Movies" content={familyMovies}></List>
-        </View>
+        {upcomingMovies && (
+          <View style={styles.sliderBoxContainer}>
+            <SliderBox
+              images={upcomingMovies}
+              autoplay={true}
+              circleLoop={true}
+              sliderBoxHeight={useWindowDimensions().height / 1.5}
+              dotStyle={styles.sliderBoxStyles}
+            />
+            {error && <Text style={{ color: 'red' }}>Error In The Server</Text>}
+          </View>
+        )}
+
+        {popularMovies && (
+          <View style={styles.carousel}>
+            <List title="Popular Movies" content={popularMovies}></List>
+          </View>
+        )}
+        
+        {popularTv && (
+          <View style={styles.carousel}>
+            <List title="Popular Tv Shows" content={popularTv}></List>
+          </View>
+        )}
+
+        {familyMovies && (
+          <View style={styles.carousel}>
+            <List title="Family Movies" content={familyMovies}></List>
+          </View>
+        )}
       </ScrollView>
     </React.Fragment>
   );
