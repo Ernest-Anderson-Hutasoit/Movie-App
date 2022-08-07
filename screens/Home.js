@@ -5,7 +5,7 @@ import { SliderBox } from "react-native-image-slider-box";
 import List from '../components/List';
 import Error from '../components/Error';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const [upcomingMovies, setUpcomingMovies] = useState([]); //destructuring array
   const [popularMovies, setPopularMovies] = useState(); //destructuring array
   const [popularTv, setPopularTv] = useState(); //destructuring array
@@ -65,19 +65,19 @@ const Home = () => {
 
           {popularMovies && (
             <View style={styles.carousel}>
-              <List title="Popular Movies" content={popularMovies}></List>
+              <List navigation={navigation} title="Popular Movies" content={popularMovies}></List>
             </View>
           )}
           
           {popularTv && (
             <View style={styles.carousel}>
-              <List title="Popular Tv Shows" content={popularTv}></List>
+              <List navigation={navigation} title="Popular Tv Shows" content={popularTv}></List>
             </View>
           )}
 
           {familyMovies && (
             <View style={styles.carousel}>
-              <List title="Family Movies" content={familyMovies}></List>
+              <List navigation={navigation} title="Family Movies" content={familyMovies}></List>
             </View>
           )}
         </ScrollView>

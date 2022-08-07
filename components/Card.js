@@ -10,9 +10,9 @@ const propTypes={
 
 class Card extends React.PureComponent {
     render() {
-        const {item} = this.props;
+        const {navigation, item} = this.props;
         return (
-            <TouchableOpacity style={styles.containerCard}>
+            <TouchableOpacity style={styles.containerCard} onPress={() => navigation.navigate('Detail')}>
                 <Image 
                     style={styles.cardMovies} 
                     resizeMode="cover" 
@@ -47,5 +47,7 @@ const styles = StyleSheet.create({
         top:5
     }
 });
+
+Card.propTypes = propTypes;
 
 export default Card;
