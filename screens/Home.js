@@ -6,7 +6,7 @@ import List from '../components/List';
 import Error from '../components/Error';
 
 const Home = ({navigation}) => {
-  const [upcomingMovies, setUpcomingMovies] = useState([]); //destructuring array
+  const [upcomingMovies, setUpcomingMovies] = useState(); //destructuring array
   const [popularMovies, setPopularMovies] = useState(); //destructuring array
   const [popularTv, setPopularTv] = useState(); //destructuring array
   const [familyMovies, setFamilyMovies] = useState(); //destructuring array
