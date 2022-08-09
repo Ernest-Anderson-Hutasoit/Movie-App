@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 // This is for debug
 const propTypes={
     title:PropTypes.string,
-    content:PropTypes.object
+    content:PropTypes.array
 }
 
 class List extends React.PureComponent {

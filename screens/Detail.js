@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { ActivityIndicator, View, Text, ScrollView, StyleSheet, useWindowDimensions, TouchableOpacity, Image } from "react-native";
 import { getMovie } from "../services/services";
 
 const Detail = ({route, navigation}) => {
-    const {movie} = route.params;
+    const {movieId} = route.params;
     const [moviesDetail, setMoviesDetail] = useState(); //destructuring array
     const [error, setError] = useState(false); //destructuring array
     const [isLoaded, setLoaded] = useState(false); //destructuring array
+    const { styles } = useStyle(); //destructuring object
 
     const getData = () => {
         return Promise.all([
-            getMovie(movie.id),
+            getMovie(movieId),
         ]);
       };
     
@@ -29,20 +30,73 @@ const Detail = ({route, navigation}) => {
             .finally(() => {
                 setLoaded(true);
             })
-    }, [movie.id]);
+    }, [movieId]);
 
     return (
         <React.Fragment>
-            {isLoaded && (
-                <View>
-                    <Text>{movie.title}</Text>
-                    <Text>{moviesDetail.title}</Text>
-                    <Text>{moviesDetail.status}</Text>
-                    <Text>{moviesDetail.tagline}</Text>
-                </View>
+            {isLoaded && !error && (
+                <ScrollView>
+                    <Image
+                        style={styles.posterMovies}
+                        resizeMode="cover"
+                        source={moviesDetail.poster_path 
+                            ? {uri: 'https://image.tmdb.org/t/p/w500' + moviesDetail.poster_path}
+                            : require('../assets/images/placeholder.png')}>
+                    </Image>
+                    {/* {!moviesDetail.poster_path && <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>} */}
+                    <View style={styles.container}>
+                        <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>
+                        {moviesDetail.genres && (
+                            <View style={styles.genresContainer}>
+                                {moviesDetail.genres.map((genre) => {
+                                    return(<Text key={genre.id} style={styles.genre}>{genre.name}</Text>);
+                                })}
+                            </View>  
+                        )}
+                    </View>
+                </ScrollView>
             )}
+            {!isLoaded && (<ActivityIndicator size="large" color="#0000ff" />)}
         </React.Fragment>
     );
+}
+
+const useStyle = () =>{
+    // const dimensions = useWindowDimensions();
+    const {height, width} = useWindowDimensions(); //destructuring object
+
+    const styles = StyleSheet.create({
+        container:{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        moviesTitle:{
+            // position:'absolute',
+            fontSize:24,
+            fontWeight:"bold",
+            color:"black",
+            marginTop:10,
+            marginBottom:10
+        },
+        genresContainer:{
+            flexDirection:"row",
+            alignContent:"center",
+            marginTop:20
+        },
+        genre:{
+            marginRight:10,
+            fontWeight:"bold",
+        },
+        posterMovies:{
+            // height:dimensions.height,
+            height:height / 2.5,
+            // width:dimensions.width,
+            // width:width,
+        }
+      });
+
+    return {styles};
 }
 
 export default Detail;

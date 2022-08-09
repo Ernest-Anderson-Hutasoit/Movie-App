@@ -82,9 +82,7 @@ const Home = ({navigation}) => {
           )}
         </ScrollView>
       )}
-      {!isLoaded && (
-        <ActivityIndicator size="large" color="#0000ff" />
-      )}
+      {!isLoaded && (<ActivityIndicator size="large" color="#0000ff" />)}
       {error && <Error />}
     </React.Fragment>
   );
