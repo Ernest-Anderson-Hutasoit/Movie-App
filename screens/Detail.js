@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, ScrollView, StyleSheet, useWindowDimensions, TouchableOpacity, Image } from "react-native";
+import { ActivityIndicator, View, Text, ScrollView, StyleSheet, useWindowDimensions, Image } from "react-native";
 import { getMovie } from "../services/services";
+import StarRating from 'react-native-star-rating';
 
 const Detail = ({route, navigation}) => {
     const {movieId} = route.params;
@@ -53,6 +54,13 @@ const Detail = ({route, navigation}) => {
                                 })}
                             </View>  
                         )}
+                        <StarRating 
+                            disabled={true} 
+                            fullStarColor={"gold"} 
+                            maxStars={5} 
+                            rating={moviesDetail.vote_average / 2}
+                            starSize={30}
+                        />
                     </View>
                 </ScrollView>
             )}
@@ -68,21 +76,26 @@ const useStyle = () =>{
     const styles = StyleSheet.create({
         container:{
             flex: 1,
-            justifyContent: 'center',
+            marginLeft:20,
+            marginTop:20,
+            // justifyContent: 'center',
             alignItems: 'center'
         },
         moviesTitle:{
             // position:'absolute',
             fontSize:24,
             fontWeight:"bold",
+            alignSelf:"flex-start",
             color:"black",
             marginTop:10,
             marginBottom:10
         },
         genresContainer:{
             flexDirection:"row",
-            alignContent:"center",
-            marginTop:20
+            // alignContent:"center",
+            justifyContent: 'center',
+            marginTop:20,
+            marginBottom:20
         },
         genre:{
             marginRight:10,
