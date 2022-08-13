@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, ScrollView, StyleSheet, useWindowDimensions, Image } from "react-native";
+import { 
+    ActivityIndicator, 
+    View, 
+    Text, 
+    ScrollView, 
+    StyleSheet, 
+    useWindowDimensions, 
+    Image, 
+    Modal, 
+    Pressable} from "react-native";
 import { getMovie } from "../services/services";
+import PlayButton from "../components/PlayButton";
 import StarRating from 'react-native-star-rating';
 import dateFormat from "dateformat";
 
@@ -9,7 +19,8 @@ const Detail = ({route, navigation}) => {
     const [moviesDetail, setMoviesDetail] = useState(); //destructuring array
     const [error, setError] = useState(false); //destructuring array
     const [isLoaded, setLoaded] = useState(false); //destructuring array
-    const { styles } = useStyle(); //destructuring object
+    const [modalVisible, setModalVisible] = useState(false); //destructuring array
+    const {styles} = useStyle(); //destructuring object
 
     const getData = () => {
         return Promise.all([
@@ -34,38 +45,54 @@ const Detail = ({route, navigation}) => {
             })
     }, [movieId]);
 
+    const showVideo = () => {
+        setModalVisible(!modalVisible);
+    }
+    
     return (
         <React.Fragment>
             {isLoaded && !error && (
-                <ScrollView>
-                    <Image
-                        style={styles.posterMovies}
-                        resizeMode="cover"
-                        source={moviesDetail.poster_path 
-                            ? {uri: 'https://image.tmdb.org/t/p/w500' + moviesDetail.poster_path}
-                            : require('../assets/images/placeholder.png')}>
-                    </Image>
-                    {/* {!moviesDetail.poster_path && <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>} */}
-                    <View style={styles.container}>
-                        <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>
-                        {moviesDetail.genres && (
-                            <View style={styles.genresContainer}>
-                                {moviesDetail.genres.map((genre) => {
-                                    return(<Text key={genre.id} style={styles.genre}>{genre.name}</Text>);
-                                })}
-                            </View>  
-                        )}
-                        <StarRating 
-                            disabled={true} 
-                            fullStarColor={"gold"} 
-                            maxStars={5} 
-                            rating={moviesDetail.vote_average / 2}
-                            starSize={30}
-                        />
-                        <Text style={styles.overview}>{moviesDetail.overview}</Text>
-                        <Text style={styles.releaseDate}>{'Release Date: ' + dateFormat(moviesDetail.release_date, 'dd mmmm yyyy')}</Text>
-                    </View>
-                </ScrollView>
+                <View>
+                    <ScrollView>
+                        <Image
+                            style={styles.posterMovies}
+                            resizeMode="cover"
+                            source={moviesDetail.poster_path 
+                                ? {uri: 'https://image.tmdb.org/t/p/w500' + moviesDetail.poster_path}
+                                : require('../assets/images/placeholder.png')}>
+                        </Image>
+                        {/* {!moviesDetail.poster_path && <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>} */}
+                        <View style={styles.container}>
+                            <View style={styles.playButton}>
+                                <PlayButton handlePress={showVideo}></PlayButton>
+                            </View>
+                            <Text style={styles.moviesTitle}>{moviesDetail.title}</Text>
+                            {moviesDetail.genres && (
+                                <View style={styles.genresContainer}>
+                                    {moviesDetail.genres.map((genre) => {
+                                        return(<Text key={genre.id} style={styles.genre}>{genre.name}</Text>);
+                                    })}
+                                </View>  
+                            )}
+                            <StarRating 
+                                disabled={true} 
+                                fullStarColor={"gold"} 
+                                maxStars={5} 
+                                rating={moviesDetail.vote_average / 2}
+                                starSize={30}
+                            />
+                            <Text style={styles.overview}>{moviesDetail.overview}</Text>
+                            <Text style={styles.releaseDate}>{'Release Date: ' + dateFormat(moviesDetail.release_date, 'dd mmmm yyyy')}</Text>
+                        </View>
+                    </ScrollView>
+                    <Modal animationType='slide' visible={modalVisible}>
+                        <View style={styles.modalText}>
+                            <Pressable onPress={() => showVideo()}>
+                                <Text>Its A test</Text>
+                            </Pressable>
+                        </View>
+                    </Modal>
+                </View>
             )}
             {!isLoaded && (<ActivityIndicator size="large" color="#0000ff" />)}
         </React.Fragment>
@@ -116,6 +143,14 @@ const useStyle = () =>{
         releaseDate:{
             color:"black",
             fontWeight:"bold"
+        },
+        playButton:{
+            position:'absolute',
+            top:-50,
+            right:20
+        },
+        modalText:{
+            alignSelf:'center'
         }
       });
 
