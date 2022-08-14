@@ -13,6 +13,7 @@ import { getMovie } from "../services/services";
 import PlayButton from "../components/PlayButton";
 import StarRating from 'react-native-star-rating';
 import dateFormat from "dateformat";
+import Video from "../components/Video";
 
 const Detail = ({route, navigation}) => {
     const {movieId} = route.params;
@@ -85,11 +86,13 @@ const Detail = ({route, navigation}) => {
                             <Text style={styles.releaseDate}>{'Release Date: ' + dateFormat(moviesDetail.release_date, 'dd mmmm yyyy')}</Text>
                         </View>
                     </ScrollView>
-                    <Modal animationType='slide' visible={modalVisible}>
-                        <View style={styles.modalText}>
-                            <Pressable onPress={() => showVideo()}>
-                                <Text>Its A test</Text>
-                            </Pressable>
+                    <Modal 
+                        animationType='slide' 
+                        // supportedOrientations={['portrait', 'landscape']} 
+                        visible={modalVisible}
+                    >
+                        <View style={styles.videoModal}>
+                            <Video onClose={showVideo} navigation={navigation} />
                         </View>
                     </Modal>
                 </View>
@@ -149,8 +152,10 @@ const useStyle = () =>{
             top:-50,
             right:20
         },
-        modalText:{
-            alignSelf:'center'
+        videoModal:{
+            flex: 1,
+            justifyContent:'center',
+            alignItems:'center'
         }
       });
 
